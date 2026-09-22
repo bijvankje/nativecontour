@@ -22,22 +22,21 @@ samen een thema vormen. Er komt hier dus niets vanzelf ergens live te staan.
 
 ## Wat nog in de bordurodam-repo staat
 
-De **themacode** van de Amsterdam-lijn is bewust achtergebleven, omdat de winkel
-bordurodam.nl die op dit moment nog gebruikt: de collectie *Amsterdam* heeft daar vier
-producten en een eigen pagina. Het gaat om:
+De **themacode** kwam op dezelfde dag alsnog mee, zodra vaststond dat de vier
+Amsterdam-artikelen uit die winkel gaan. Ze staat in [`thema/`](../thema/), met een eigen
+leesmij erbij: de landingspagina, de twee productsjablonen met een vast motief, de sectie
+eronder, de motievenrij met haar opmaak en de twee tests.
 
-- `templates/collection.amsterdam.json` — de landingspagina
-- `templates/product.fixed-embroidery-amsterdam.json` en `sections/main-product-fixed-embroidery.liquid` — de productpagina met een vast motief
-- `sections/categories.liquid` — de motievenrij op die pagina
+Eén stuk bleef daar bewust achter: `sections/main-product-vaste-borduring.liquid`, de sectie
+die een productpagina met een vaste borduring tekent. De tassen van Bordurodam draaien erop.
+Die sectie kan ook met motief-blokken overweg, dus wie `product.vast-motief.json` hier weer
+wil gebruiken, heeft haar erbij nodig.
 
-Die verhuizen pas als de Amsterdam-producten uit de winkel van Bordurodam gaan. Dat is een
-aparte beslissing: hij verandert wat bezoekers zien.
-
-Hetzelfde geldt voor het Shopify-thema `bordurodam-amsterdam` zelf. Dat staat nog in de
-winkel van Bordurodam, niet gepubliceerd, en is daar tot nu toe bewaard omdat het de enige
-plek is waar de instellingen en de homepage van die eerste fase nog compleet staan. De zip
-hierboven is daar een kopie van, dus zodra deze winkel zijn eigen thema heeft, kan het thema
-daar weg.
+In de winkel van Bordurodam moeten de vier artikelen en de collectie *Amsterdam* nog met de
+hand weg; dat staat op de admin-lijst van die repo. Het Shopify-thema `bordurodam-amsterdam`
+blijft daar voorlopig staan: het is de enige plek waar de instellingen en de homepage van de
+eerste fase compleet zijn. De zip hierboven is een export daarvan, en een export bevat niet
+alles — dus weg mag het thema pas als deze winkel op eigen benen staat.
 
 ## De referenties in de meegekomen teksten
 
