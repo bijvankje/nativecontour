@@ -1,0 +1,170 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product-vaste-borduring",
+      "blocks": {
+        "motief-stadsplattegrond": {
+          "type": "motief",
+          "settings": {
+            "sleutel": "stadsplattegrond",
+            "naam": "Stadsplattegrond",
+            "plaats": "Midden voor",
+            "formaat": "",
+            "toelichting": "De plattegrond van de binnenstad, geborduurd in één kleur.",
+            "prijs": ""
+          }
+        },
+        "motief-grachtengordel": {
+          "type": "motief",
+          "settings": {
+            "sleutel": "grachtengordel",
+            "naam": "Grachtengordel",
+            "plaats": "Midden voor",
+            "formaat": "",
+            "toelichting": "De grachtengordel, van Singel tot Prinsengracht.",
+            "prijs": ""
+          }
+        },
+        "motief-andreaskruizen": {
+          "type": "motief",
+          "settings": {
+            "sleutel": "andreaskruizen",
+            "naam": "Andreaskruizen",
+            "plaats": "Linkerborst",
+            "formaat": "",
+            "toelichting": "De drie kruizen uit het stadswapen.",
+            "prijs": ""
+          }
+        },
+        "tier-1-24": {
+          "type": "tier",
+          "settings": {
+            "min_qty": 1,
+            "max_qty": 24,
+            "discount_percent": 0
+          }
+        },
+        "tier-25-49": {
+          "type": "tier",
+          "settings": {
+            "min_qty": 25,
+            "max_qty": 49,
+            "discount_percent": 5
+          }
+        },
+        "tier-50-99": {
+          "type": "tier",
+          "settings": {
+            "min_qty": 50,
+            "max_qty": 99,
+            "discount_percent": 10
+          }
+        },
+        "tier-100-249": {
+          "type": "tier",
+          "settings": {
+            "min_qty": 100,
+            "max_qty": 249,
+            "discount_percent": 15
+          }
+        },
+        "tier-250-499": {
+          "type": "tier",
+          "settings": {
+            "min_qty": 250,
+            "max_qty": 499,
+            "discount_percent": 20
+          }
+        },
+        "tier-500-plus": {
+          "type": "tier",
+          "settings": {
+            "min_qty": 500,
+            "max_qty": 0,
+            "discount_percent": 25
+          }
+        },
+        "usp-1": {
+          "type": "usp",
+          "settings": {
+            "text": "Kant-en-klaar geborduurd, geen logo nodig"
+          }
+        },
+        "usp-2": {
+          "type": "usp",
+          "settings": {
+            "text": "Geen opstartkosten, het programma bestaat al"
+          }
+        },
+        "usp-3": {
+          "type": "usp",
+          "settings": {
+            "text": "Levertijd 2 tot 3 weken"
+          }
+        },
+        "usp-4": {
+          "type": "usp",
+          "settings": {
+            "text": "Ontworpen en geborduurd in Purmerend"
+          }
+        }
+      },
+      "block_order": [
+        "motief-stadsplattegrond",
+        "motief-grachtengordel",
+        "motief-andreaskruizen",
+        "tier-1-24",
+        "tier-25-49",
+        "tier-50-99",
+        "tier-100-249",
+        "tier-250-499",
+        "tier-500-plus",
+        "usp-1",
+        "usp-2",
+        "usp-3",
+        "usp-4"
+      ],
+      "settings": {
+        "eyebrow_motief": "Onze ontwerpen · kant-en-klaar geborduurd",
+        "placement": "Midden voor",
+        "size_band": "Standaard (8 - 12cm)",
+        "size_max_cm": 0,
+        "size_label": "circa 10 × 10 cm",
+        "vast_note": "Het motief is al gedigitaliseerd en ligt klaar. Je hoeft niets aan te leveren en er komt geen offerte aan te pas.",
+        "color_option_name": "Kleur",
+        "color_swatches": "Zwart:#1d1d1b, Navy:#1b2a4a, Grijs gemêleerd:#8d8d88, Wit:#f5f3ef, Bordeaux:#6d2233, Olijf:#5a6144",
+        "show_logo_preview": true,
+        "preview_left": 50,
+        "preview_top": 42,
+        "preview_width": 22,
+        "price_prefix": "Vanaf",
+        "vat_percent": 21,
+        "embroidery_fee_handle": "borduring-logo, borduring-logo-2, borduring-logo-3",
+        "setup_fee_handle": "opstartkosten",
+        "setup_threshold": 25,
+        "setup_bij_motief": false
+      }
+    },
+    "related": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Onze ontwerpen",
+        "title": "Ook verkrijgbaar met",
+        "count": 4
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related"
+  ]
+}

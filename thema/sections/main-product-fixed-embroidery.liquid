@@ -1,0 +1,385 @@
+<section class="pdp">
+  <div class="container">
+    <div class="pdp__grid">
+      <div class="pdp__gallery">
+        <div class="pdp__main" data-pdp-main>
+          {%- if product.featured_image -%}
+            <img src="{{ product.featured_image | image_url: width: 1200 }}" alt="{{ product.title | escape }}" width="1200" height="1500">
+          {%- else -%}
+            <div style="display:grid;place-items:center;height:100%;color:var(--bd-muted)">Foto volgt</div>
+          {%- endif -%}
+        </div>
+        {%- if product.images.size > 1 -%}
+          <div class="pdp__thumbs">
+            {%- for img in product.images limit: 8 -%}
+              <img src="{{ img | image_url: width: 200 }}" data-pdp-thumb="{{ img | image_url: width: 1200 }}" alt="" loading="lazy" width="200" height="200">
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+      <div>
+        <div class="eyebrow">{{ product.type | default: 'Vaste borduring' }}</div>
+        <h1 class="pdp__title">{{ product.title }}</h1>
+        {%- comment -%}
+          Ook deze pagina volgt de btw-stand van de winkel. Ze ligt stil -- geen
+          actief product wijst naar dit sjabloon -- maar de Amsterdam-lijn komt
+          terug en die verkoopt aan consumenten, en juist daar mag een kaal bedrag
+          zonder btw-woord niet staan. Het alternatief was deze twee pagina's
+          uitzonderen in check-btw-weergave.py, en een stille uitzondering is
+          precies hoe de tekstpagina de schakelaar kon missen.
+
+          vat_percent bestaat hier niet als instelling; de default van 21 vangt dat.
+        {%- endcomment -%}
+        {%- assign vat_percent = section.settings.vat_percent | default: 21 -%}
+        {%- assign vat_factor = vat_percent | plus: 100 | divided_by: 100.0 -%}
+        {%- if shop.taxes_included -%}
+          {%- assign price_incl = product.price_min -%}
+          {%- assign price_excl = product.price_min | divided_by: vat_factor -%}
+        {%- else -%}
+          {%- assign price_excl = product.price_min -%}
+          {%- assign price_incl = product.price_min | times: vat_factor -%}
+        {%- endif -%}
+        <div class="pdp__price">{% render 'prijs-btw', excl: price_excl, incl: price_incl, note_class: 'pdp__price-vat' %}</div>
+        <div class="pdp__desc">{{ product.description }}</div>
+
+        <p style="color:var(--bd-muted);font-size:.9rem;margin-top:.5rem">
+          {%- comment -%}
+            Niet opsommen wat de klant kiest: deze sectie draait op elk artikel, en welke
+            opties er zijn verschilt per product. De vorige tekst zei "je kiest alleen de
+            garenkleur", terwijl kleur, maat en aantal er ook gewoon staan. Benoem dus wat
+            vastligt, en laat de rest zichzelf wijzen.
+
+            Ook geen "deze hoodie": het sjabloon wordt ook voor andere artikelen gebruikt.
+
+            "Uit onze eigen collectie" en niet "vast borduurmotief": dat laatste beschreef
+            een beperking, terwijl het een keuze van het huis is. De motieven zijn zelf
+            ontworpen en gedigitaliseerd, en dat is precies waarom plaats en formaat niet
+            open staan -- ze zijn op dit artikel uitgeprobeerd.
+          {%- endcomment -%}
+          {{ section.settings.design_name | default: 'Stadsplattegrond' }} uit onze eigen collectie, geborduurd op {{ section.settings.placement | default: 'de linkerborst' }}. Motief en plaats liggen vast. De overige opties kies je hieronder.
+        </p>
+
+        <form method="post" action="/cart/add" data-product-form>
+          {%- comment -%}
+            Begint leeg en wordt door de JS gezet zodra alle opties gekozen zijn. Stond
+            hier vast op selected_or_first_available_variant, terwijl niets hem bijwerkte:
+            /cart/add gaat op deze id af en negeert de options[...]-velden ernaast. Wie
+            zwart in XL koos, kreeg dus gewoon de eerste variant die er toevallig was.
+          {%- endcomment -%}
+          <input type="hidden" name="id" value="" data-variant-id>
+
+          <script type="application/json" data-variant-map>
+            {
+              "optionNames": {{ product.options_with_values | map: 'name' | json }},
+              "variants": [
+                {%- for variant in product.variants -%}
+                  { "id": {{ variant.id }}, "options": {{ variant.options | json }}, "available": {{ variant.available }} }{% unless forloop.last %},{% endunless %}
+                {%- endfor -%}
+              ]
+            }
+          </script>
+
+          <p class="rf-legend">Velden met <b>*</b> zijn nodig om te bestellen.</p>
+
+          {%- comment -%}
+            Een product zonder echte varianten krijgt van Shopify één optie "Title" met
+            waarde "Default Title". Zonder deze uitzondering rendert dat als een keuzelijst
+            met één zinloze regel.
+
+            Geen voorselectie: een select toont altijd iets, dus zonder lege eerste regel
+            staat er een keuze die de klant nooit gemaakt heeft.
+          {%- endcomment -%}
+          {%- for option in product.options_with_values -%}
+            {%- unless option.name == 'Title' -%}
+              <div class="pdp__opt" data-rf-field="optie-{{ forloop.index }}">
+                <label>{{ option.name }} <span class="rf-required" aria-hidden="true">*</span></label>
+                {%- comment -%}
+                  De sleutel staat hier én op de wrapper, uit dezelfde bron. Zou de JS hem
+                  zelf uit een teller afleiden, dan lopen ze uiteen zodra er een optie
+                  overgeslagen wordt -- en dan verschijnt de melding nergens.
+                {%- endcomment -%}
+                <select name="options[{{ option.name | escape }}]" data-option-select data-option-name="{{ option.name | escape }}" data-rf-key="optie-{{ forloop.index }}" aria-required="true">
+                  <option value="" selected>Kies {{ option.name | downcase }}…</option>
+                  {%- for val in option.values -%}
+                    <option value="{{ val | escape }}">{{ val }}</option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- endunless -%}
+          {%- endfor -%}
+
+          {%- comment -%}
+            name="quantity", niet properties[...]. Dit veld heette properties[Aantal stuks],
+            en dat is een notitie bij de regel, geen aantal. Het formulier stuurde dus
+            helemaal geen aantal mee: wie 25 invulde kreeg één stuk in de winkelmand, met
+            een briefje "Aantal stuks: 25" eronder. De waarschuwingen konden dat niet
+            zien -- het veld was immers ingevuld.
+
+            Start leeg, net als de aantallen op de andere productpagina's, zodat de klant
+            bewust een aantal kiest en de waarschuwing kan afgaan.
+          {%- endcomment -%}
+          <div class="pdp__opt" data-rf-field="aantal">
+            <label>Aantal stuks <span class="rf-required" aria-hidden="true">*</span></label>
+            <input type="number" name="quantity" min="1" value="" data-qty-input aria-required="true">
+          </div>
+
+          <input type="hidden" name="properties[Borduurmotief]" value="{{ section.settings.design_name | default: 'Stadsplattegrond' }}">
+          <input type="hidden" name="properties[Borduurplaats]" value="{{ section.settings.placement | default: 'Linkerborst' }}">
+
+          {%- comment -%}
+            Leeg beginnen in plaats van voorgevuld op Wit, met de eerste chip actief. Anders
+            koopt iemand wit garen zonder er ooit naar gekeken te hebben, en op deze pagina
+            is dat de énige borduurkeuze die hij heeft -- motief en plaats liggen vast.
+          {%- endcomment -%}
+          <div class="pdp__opt" data-configurator data-rf-field="garenkleur" style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--bd-border)">
+            <label>Garenkleur <span class="rf-required" aria-hidden="true">*</span></label>
+            <input type="hidden" name="properties[Garenkleur]" value="">
+            <div class="pdp__chips" data-chip-group data-for="properties[Garenkleur]" role="group" aria-required="true" aria-label="Garenkleur, verplicht">
+              {%- assign colors = 'Wit,Zwart,Navy,Rood,Bordeaux,Goud,Geel,Oranje,Groen,Limegroen,Turquoise,Lichtblauw,Kobaltblauw,Paars,Roze,Zilver,Beige,Bruin' | split: ',' -%}
+              {%- for c in colors -%}
+                <button type="button" class="pdp__chip" data-chip="{{ c | strip | escape }}">{{ c | strip }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+
+          <div class="rf-summary" role="alert" hidden data-rf-summary>
+            <p class="rf-summary__heading" tabindex="-1">Dit hebben we nog nodig:</p>
+            <ul class="rf-summary__list"></ul>
+          </div>
+
+          <div class="pdp__actions">
+            <button type="submit" class="btn btn-primary" name="add" data-add-btn>In winkelmand</button>
+          </div>
+          <p class="rf-hint" data-rf-hint hidden>Kies eerst de velden met een *</p>
+
+          <script>
+          (function () {
+            var form = document.currentScript.closest('form[data-product-form]');
+            if (!form) return;
+            var qtyInput = form.querySelector('[name="quantity"]');
+            var colorInput = form.querySelector('[name="properties[Garenkleur]"]');
+            var idField = form.querySelector('[data-variant-id]');
+            var optionSelects = Array.prototype.slice.call(form.querySelectorAll('[data-option-select]'));
+
+            var variantMap = null;
+            try {
+              var mapEl = form.querySelector('[data-variant-map]');
+              if (mapEl) variantMap = JSON.parse(mapEl.textContent);
+            } catch (e) { variantMap = null; }
+
+            /* Zoekt de variant die bij de gekozen opties hoort. Zolang er iets niet
+               gekozen is, is er geen variant -- en dus ook geen id om mee te sturen. */
+            function currentVariant() {
+              if (!variantMap) return null;
+              var chosen = {};
+              optionSelects.forEach(function (sel) { chosen[sel.dataset.optionName] = sel.value; });
+              var names = variantMap.optionNames;
+              for (var i = 0; i < names.length; i++) {
+                if (!chosen[names[i]]) return null;
+              }
+              for (var v = 0; v < variantMap.variants.length; v++) {
+                var variant = variantMap.variants[v];
+                var hit = true;
+                for (var n = 0; n < names.length; n++) {
+                  if (variant.options[n] !== chosen[names[n]]) { hit = false; break; }
+                }
+                if (hit) return variant;
+              }
+              return null;
+            }
+
+            /* Het id volgt de keuze; leeg zolang de combinatie niet bestaat of uitverkocht
+               is, zodat er nooit stilzwijgend een andere variant wordt toegevoegd. */
+            function syncVariant() {
+              var variant = currentVariant();
+              if (idField) idField.value = (variant && variant.available) ? variant.id : '';
+              return variant;
+            }
+
+            function check() {
+              var missing = [];
+              var qty = parseInt(qtyInput && qtyInput.value, 10);
+              if (!(qty > 0)) {
+                missing.push({ key: 'aantal', label: 'Aantal stuks', kort: 'aantal', message: 'Vul in hoeveel stuks je wilt bestellen.' });
+              }
+              optionSelects.forEach(function (sel) {
+                if (!sel.value) {
+                  missing.push({
+                    key: sel.dataset.rfKey,
+                    label: sel.dataset.optionName,
+                    message: 'Kies een ' + sel.dataset.optionName.toLowerCase() + '.'
+                  });
+                }
+              });
+              if (!colorInput || !colorInput.value) {
+                missing.push({ key: 'garenkleur', label: 'Garenkleur', message: 'Kies een garenkleur.' });
+              }
+              /* Alleen melden als de klant wél alles gekozen heeft: anders krijgt hij
+                 "niet leverbaar" terwijl hij nog aan het invullen is. */
+              if (!missing.length) {
+                var variant = currentVariant();
+                if (!variant || !variant.available) {
+                  missing.push({
+                    key: optionSelects.length ? optionSelects[0].dataset.rfKey : 'aantal',
+                    label: 'Combinatie',
+                    message: 'Deze combinatie is niet leverbaar. Kies een andere kleur of maat.'
+                  });
+                }
+              }
+              return missing;
+            }
+
+            form.addEventListener('submit', function (e) {
+              var missingFields = check();
+              if (!missingFields.length) {
+                if (window.RequiredFields) window.RequiredFields.report(form, []);
+                return;
+              }
+              e.preventDefault();
+              if (window.RequiredFields) window.RequiredFields.report(form, missingFields);
+            });
+
+            /* Na elke wijziging opnieuw kijken en alleen de velden vrijgeven die nu kloppen. */
+            function refresh() {
+              syncVariant();
+              if (!window.RequiredFields) return;
+              var missing = check();
+              var keys = missing.map(function (m) { return m.key; });
+              var allKeys = ['aantal', 'garenkleur'];
+              optionSelects.forEach(function (sel) { allKeys.push(sel.dataset.rfKey); });
+              allKeys.forEach(function (key) {
+                if (keys.indexOf(key) === -1) window.RequiredFields.clearField(form, key);
+              });
+              window.RequiredFields.updateButton(form, missing.length === 0, missing);
+            }
+
+            if (qtyInput) qtyInput.addEventListener('input', refresh);
+            optionSelects.forEach(function (sel) { sel.addEventListener('change', refresh); });
+
+            /* De chips worden door theme.js afgehandeld, en dat bestand laadt met defer --
+               dus zijn klikafhandelaar wordt ná deze regel geregistreerd en draait ook ná
+               die van ons. Zonder het uitstel hieronder lezen we de garenkleur van vóór
+               de klik, en blijft de melding staan terwijl er wel een kleur gekozen is. */
+            var chipGroup = form.querySelector('[data-chip-group][data-for="properties[Garenkleur]"]');
+            if (chipGroup) {
+              chipGroup.addEventListener('click', function (event) {
+                if (!event.target.closest('[data-chip]')) return;
+                setTimeout(refresh, 0);
+              });
+            }
+
+            /* Begin-aanroep: knop staat verderop in de sectie, dus wacht op DOMContentLoaded.
+               Zo staat de knop bij het laden meteen geblokkeerd met de juiste melding, net als
+               op de andere productpagina's. */
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', refresh);
+            } else {
+              refresh();
+            }
+          })();
+          </script>
+
+          <div class="pdp__info">
+            <div>✓ Vast, kant-en-klaar borduurmotief</div>
+            <div>✓ {{ settings.delivery_note | default: 'Levertijd 2 tot 3 weken' }}</div>
+            <div>✓ Kleine én grote oplages</div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div style="margin-top:4rem;padding-top:3rem;border-top:1px solid var(--bd-border)">
+        <div class="eyebrow" style="margin-bottom:.5rem">Klanten aan het woord</div>
+        <h2 style="margin-bottom:2rem">Zo draagt onze community 'm</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'customer_photo' -%}
+              <div {{ block.shopify_attributes }}>
+                {%- if block.settings.image != blank -%}
+                  <button
+                    type="button"
+                    class="customer-photo-trigger-{{ section.id }}"
+                    data-full="{{ block.settings.image | image_url: width: 1600 }}"
+                    data-caption="{{ block.settings.caption | escape }}"
+                    style="all:unset;cursor:zoom-in;display:block;aspect-ratio:1/1;overflow:hidden;border-radius:8px;width:100%"
+                  >
+                    <img src="{{ block.settings.image | image_url: width: 600 }}" alt="{{ block.settings.caption | default: 'Klantfoto' | escape }}" loading="lazy" width="600" height="600" style="width:100%;height:100%;object-fit:cover;display:block">
+                  </button>
+                {%- else -%}
+                  <div style="aspect-ratio:1/1;width:100%;display:grid;place-items:center;background:var(--bd-border);color:var(--bd-muted);font-size:.8rem;border-radius:8px">Foto ontbreekt</div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div
+    id="customer-photo-lightbox-{{ section.id }}"
+    style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;padding:2rem;cursor:zoom-out"
+  >
+    <div style="max-width:90vw;max-height:90vh;text-align:center">
+      <img id="customer-photo-lightbox-img-{{ section.id }}" src="" alt="" style="max-width:100%;max-height:80vh;border-radius:8px;display:block;margin:0 auto">
+      <p id="customer-photo-lightbox-caption-{{ section.id }}" style="color:#fff;margin-top:1rem;font-size:.9rem"></p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var sectionId = {{ section.id | json }};
+      var triggers = document.querySelectorAll('.customer-photo-trigger-' + sectionId);
+      var lightbox = document.getElementById('customer-photo-lightbox-' + sectionId);
+      var lightboxImg = document.getElementById('customer-photo-lightbox-img-' + sectionId);
+      var lightboxCaption = document.getElementById('customer-photo-lightbox-caption-' + sectionId);
+
+      if (!triggers.length || !lightbox) return;
+
+      triggers.forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+          lightboxImg.src = trigger.dataset.full;
+          lightboxImg.alt = trigger.dataset.caption || 'Klantfoto';
+          lightboxCaption.textContent = trigger.dataset.caption || '';
+          lightbox.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      lightbox.addEventListener('click', function () {
+        lightbox.style.display = 'none';
+        lightboxImg.src = '';
+        document.body.style.overflow = '';
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && lightbox.style.display === 'flex') {
+          lightbox.style.display = 'none';
+          lightboxImg.src = '';
+          document.body.style.overflow = '';
+        }
+      });
+    })();
+  </script>
+</section>
+{% schema %}
+{
+  "name": "Vaste borduring",
+  "settings": [
+    { "type": "text", "id": "design_name", "label": "Naam motief", "default": "Stadsplattegrond" },
+    { "type": "text", "id": "placement", "label": "Borduurplaats (vast)", "default": "Linkerborst" }
+  ],
+  "blocks": [
+    {
+      "type": "customer_photo",
+      "name": "Klantfoto",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Foto" },
+        { "type": "text", "id": "caption", "label": "Bijschrift (optioneel)" }
+      ]
+    }
+  ],
+  "max_blocks": 12
+}
+{% endschema %}

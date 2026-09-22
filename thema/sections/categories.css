@@ -1,0 +1,16 @@
+
+/* Categories */
+.cats{padding:5rem 0;background:var(--bd-white)}
+.cats__grid{display:grid;grid-template-columns:1fr;gap:1.25rem;margin-top:3rem}
+@media(min-width:700px){.cats__grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1000px){.cats__grid{grid-template-columns:repeat(3,1fr)}}
+.cat{position:relative;display:block;overflow:hidden;aspect-ratio:4/5;background:var(--bd-navy);color:#fff}
+.cat img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;transition:.5s}
+.cat:hover img{opacity:.4;transform:scale(1.04)}
+.cat__body{position:absolute;inset:0;padding:2rem;display:flex;flex-direction:column;justify-content:flex-end;z-index:2}
+.cat__tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;opacity:.85}
+.cat__title{font-family:var(--font-serif);font-size:1.6rem;margin:.4rem 0}
+.cat__desc{font-size:.85rem;opacity:.85;margin:0 0 .75rem;max-width:26ch}
+.cat__cta{font-size:.85rem;color:var(--bd-gold);font-weight:600}
+
+/* Testimonials */

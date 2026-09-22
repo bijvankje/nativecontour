@@ -1,0 +1,579 @@
+<title>Motiefkaarten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap">
+<style>
+/* ========== Chrome: de voorstelpagina ==========
+   Zelfde tokenset als de eerdere voorstellen in deze map, zodat de
+   documenten als een reeks lezen. */
+:root{
+  --ground:#e9eaee; --panel:#f6f7f9; --panel-2:#ffffff;
+  --line:#d3d6de; --line-soft:#e3e5eb;
+  --fg:#161a21; --fg-2:#4b5260; --fg-3:#79808e;
+  --mark:#8a6c26; --mark-bg:#f3ead6;
+  --no:#9a3f2a; --no-bg:#f6e6e1;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f1218; --panel:#161a21; --panel-2:#1b2029;
+    --line:#2c323d; --line-soft:#232833;
+    --fg:#e6e8ee; --fg-2:#a6adb9; --fg-3:#78808d;
+    --mark:#d3ac57; --mark-bg:#241f14;
+    --no:#e08a72; --no-bg:#2a1a15;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1218; --panel:#161a21; --panel-2:#1b2029;
+  --line:#2c323d; --line-soft:#232833;
+  --fg:#e6e8ee; --fg-2:#a6adb9; --fg-3:#78808d;
+  --mark:#d3ac57; --mark-bg:#241f14;
+  --no:#e08a72; --no-bg:#2a1a15;
+}
+/* De winkel zelf heeft geen donkere stand; de kaarten staan altijd op
+   hun eigen navy, zoals ze ook in de winkel staan. */
+.sh{
+  --s-navy:#0F1E3D; --s-cream:#FAF7F0; --s-cream-200:#f2ecdd;
+  --s-gold:#C9A24B; --s-muted:#5b6478; --s-border:#e5decd; --s-white:#ffffff;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--fg-2);
+  font-family:'Archivo',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+h1,h2,h3{font-family:'Archivo',system-ui,sans-serif;color:var(--fg);margin:0;text-wrap:balance;letter-spacing:-.022em;font-weight:600;line-height:1.12}
+h1{font-size:clamp(2.1rem,4.4vw,3.15rem)}
+h2{font-size:clamp(1.5rem,2.6vw,2rem)}
+h3{font-size:1.02rem;letter-spacing:-.01em}
+p{margin:0}
+a{color:inherit}
+.lbl{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.695rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fg-3);font-weight:500}
+.lede{font-size:1.075rem;line-height:1.62;max-width:66ch}
+.prose{max-width:66ch;display:flex;flex-direction:column;gap:.85em}
+.prose p{font-size:.95rem;line-height:1.62}
+strong{color:var(--fg);font-weight:600}
+code{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.85em;background:var(--panel);border:1px solid var(--line-soft);padding:.08em .34em;border-radius:2px;color:var(--fg)}
+em{font-style:italic}
+
+.masthead{border-bottom:1px solid var(--line);background:var(--panel)}
+.masthead__in{display:flex;flex-direction:column;gap:1.15rem;padding-top:4.5rem;padding-bottom:3.5rem}
+.masthead .lbl{display:flex;gap:.65rem;align-items:center}
+.masthead .lbl::after{content:"";flex:1;height:1px;background:var(--line);max-width:180px}
+
+.section{padding-top:4.25rem;padding-bottom:1rem}
+.section__head{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem}
+
+.answer{border-left:3px solid var(--mark);background:var(--panel-2);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:1.6rem 1.7rem;display:flex;flex-direction:column;gap:.85rem;margin-top:1rem}
+.answer p{font-size:.97rem;line-height:1.62;max-width:64ch}
+
+/* Bord: de winkelkaarten op hun eigen ondergrond, met een balk erboven */
+.board{border:1px solid var(--line);background:var(--panel-2);margin-top:1.75rem}
+.board__bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.55rem .8rem;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+.state{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.7rem;letter-spacing:.05em;color:var(--fg-3)}
+.state b{color:var(--mark);font-weight:500}
+.sh-toggle{display:inline-flex;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.sh-toggle button{border:0;background:var(--panel-2);color:var(--fg-2);font:inherit;font-size:.76rem;padding:.34rem .8rem;cursor:pointer}
+.sh-toggle button[aria-pressed="true"]{background:var(--mark);color:var(--panel-2);font-weight:600}
+.sh-toggle button:focus-visible{outline:2px solid var(--mark);outline-offset:-3px}
+
+/* De vijf regels */
+.rules{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);margin-top:1.75rem}
+@media(min-width:700px){.rules{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1040px){.rules{grid-template-columns:repeat(5,1fr)}}
+.rule{background:var(--panel-2);padding:1.35rem 1.3rem;display:flex;flex-direction:column;gap:.5rem}
+.rule h3{font-size:.95rem}
+.rule p{font-size:.86rem;line-height:1.55}
+.rule .lbl{color:var(--mark)}
+
+/* Anatomie: de kaart met maatvoering ernaast */
+.anatomy{display:grid;grid-template-columns:1fr;gap:1.75rem;margin-top:1.75rem;align-items:start}
+@media(min-width:860px){.anatomy{grid-template-columns:minmax(280px,340px) 1fr;gap:2.5rem}}
+.specs{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.spec{display:grid;grid-template-columns:1fr;gap:.3rem;padding:.95rem 0;border-bottom:1px solid var(--line-soft)}
+@media(min-width:560px){.spec{grid-template-columns:15ch 1fr;gap:1.5rem;align-items:baseline}}
+.spec p{font-size:.87rem;line-height:1.55;max-width:60ch}
+.spec code{white-space:nowrap}
+
+/* Leesbaarheid: twee kaarten naast elkaar met hun contrastwaarde */
+.contrast{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);margin-top:1.75rem}
+@media(min-width:760px){.contrast{grid-template-columns:repeat(2,1fr)}}
+.cc{background:var(--panel-2);display:flex;flex-direction:column}
+.cc__head{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;padding:.8rem 1.1rem .7rem;border-bottom:1px solid var(--line-soft)}
+.cc__head .lbl{color:var(--fg)}
+.cc__stage{padding:1.4rem 1.1rem;display:grid;place-items:center;background:var(--panel)}
+/* De wrapper draagt de breedte, niet de kaart: .mcard is width:100% en zou in
+   een place-items:center-grid anders tot nul krimpen. */
+.cc__stage > div{width:100%;max-width:250px}
+.cc__text{padding:1rem 1.1rem 1.3rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
+.cc__text p{font-size:.86rem;line-height:1.55}
+.pill{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;border-radius:2px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill--yes{background:var(--mark-bg);color:var(--mark)}
+.pill--no{background:var(--no-bg);color:var(--no)}
+
+/* Stappen om een motief toe te voegen: een echte volgorde, dus genummerd */
+.steps{display:flex;flex-direction:column;border-top:1px solid var(--line);margin-top:1.5rem}
+.step{display:grid;grid-template-columns:1fr;gap:.5rem;padding:1.15rem 0;border-bottom:1px solid var(--line-soft);align-items:start}
+@media(min-width:760px){.step{grid-template-columns:3ch 20ch 1fr;gap:1.75rem}}
+.step__n{font-family:'Playfair Display',Georgia,serif;font-size:1.35rem;color:var(--mark);line-height:1;font-variant-numeric:tabular-nums}
+.step p{font-size:.88rem;line-height:1.58;max-width:62ch}
+pre{margin:0;overflow-x:auto;background:var(--panel);border:1px solid var(--line-soft);padding:.85rem 1rem;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.78rem;line-height:1.65;color:var(--fg)}
+
+.open{border:1px solid var(--line);background:var(--panel-2);margin-top:1.75rem;padding:1.5rem 1.7rem;display:flex;flex-direction:column;gap:.7rem}
+.open p{font-size:.9rem;line-height:1.6;max-width:64ch}
+
+.foot{margin-top:4rem;border-top:1px solid var(--line);background:var(--panel)}
+.foot__in{padding-top:2rem;padding-bottom:3rem;display:flex;flex-direction:column;gap:.5rem}
+.foot p{font-size:.82rem;color:var(--fg-3);max-width:70ch}
+:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+
+/* ========== De winkel zelf: de motiefkaart, letterlijk uit base.css:231-238 ==========
+   .cat{aspect-ratio:4/5;background:var(--bd-navy)}
+   .cat img{object-fit:cover;opacity:.55}
+   .cat__body{inset:0;padding:2rem;justify-content:flex-end}
+   Die waarden staan hieronder een op een overgenomen, want juist daar
+   gaat het over: het beeld komt voor 45% onder navy te liggen. */
+.sh{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--s-cream);padding:1.5rem;width:100%}
+.sh-grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media(min-width:640px){.sh-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:940px){.sh-grid{grid-template-columns:repeat(3,1fr)}}
+
+.mcard{position:relative;display:block;overflow:hidden;aspect-ratio:4/5;background:var(--s-navy);color:#fff;width:100%}
+.mcard__photo{position:absolute;inset:0;opacity:.55;transition:filter .45s ease,opacity .45s ease}
+.mcard__body{position:absolute;inset:0;padding:2rem;display:flex;flex-direction:column;justify-content:flex-end;z-index:2}
+.mcard__tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;opacity:.85}
+.mcard__title{font-family:'Playfair Display',Georgia,serif;font-size:1.6rem;margin:.4rem 0;font-weight:600;line-height:1.15}
+.mcard__desc{font-size:.85rem;opacity:.85;margin:0 0 .75rem;max-width:26ch;line-height:1.5}
+.mcard__cta{font-size:.85rem;color:var(--s-gold);font-weight:600}
+
+/* Het "sfeerbeeld": een gelaagde stand-in, geen echte foto.
+   Genoeg om compositie, toon en contrast te beoordelen. */
+.ph{position:absolute;inset:0;overflow:hidden}
+.ph__sky{position:absolute;inset:0}
+.ph__garment{position:absolute;left:50%;transform:translateX(-50%);width:76%;border-radius:44% 44% 8% 8%/26% 26% 5% 5%}
+.ph__motief{position:absolute;left:50%;transform:translateX(-50%);width:38%;transition:top .45s ease,width .45s ease}
+.ph__motief svg{width:100%;height:auto;display:block}
+/* Het navy verloop dat de generator in de onderste derde bakt. */
+.mcard__scrim{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity .45s ease;
+  background:linear-gradient(to top,rgba(15,30,61,.88) 0%,rgba(15,30,61,.62) 18%,rgba(15,30,61,0) 42%)}
+
+/* De twee standen. Alles wat de generator doet, zit in deze twee blokken. */
+[data-staat="na"] .mcard__scrim{opacity:1}
+
+[data-staat="ruw"] .m1 .mcard__photo{filter:brightness(.80) saturate(1.2) hue-rotate(-6deg)}
+[data-staat="ruw"] .m2 .mcard__photo{filter:brightness(1.22) saturate(1.35)}
+[data-staat="ruw"] .m1 .ph__motief{top:40%;width:34%}
+[data-staat="ruw"] .m2 .ph__motief{top:62%;width:30%}
+
+[data-staat="na"] .m1 .mcard__photo,
+[data-staat="na"] .m2 .mcard__photo{filter:brightness(1.02) saturate(.9) sepia(.07)}
+[data-staat="na"] .ph__motief{top:24%;width:40%}
+
+/* Kaart 3 heeft nog geen bron: de plaatshouder die de generator maakt. */
+.mcard--leeg .ph__sky{background:repeating-linear-gradient(135deg,#1b2c4d 0 10px,#16253f 10px 20px)}
+.leeg-note{position:absolute;top:0;left:0;right:0;bottom:38%;display:grid;place-items:center;text-align:center;padding:1rem;z-index:2}
+.leeg-note span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,247,240,.72);border:1px dashed rgba(250,247,240,.4);padding:.5rem .7rem;line-height:1.6}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap masthead__in">
+    <div class="lbl">Voorstel &middot; 8 september 2026 &middot; nog te beslissen</div>
+    <h1>Motiefkaarten</h1>
+    <p class="lede">Op de Amsterdam-pagina staan drie motieven als kaart. Een heeft een screenshot, twee zijn leeg. De vraag: hoe krijgen ze een beeld dat als <em>een set</em> leest, en hoe zorgen we dat een vierde en vijfde motief er straks vanzelf bij passen?</p>
+  </div>
+</header>
+
+<main>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <div class="lbl">Het korte antwoord</div>
+        <h2>Niet drie beelden ontwerpen, maar een bewerking vastleggen</h2>
+      </div>
+      <div class="answer">
+        <p><strong>Een script legt vijf regels op aan elk aangeleverd beeld, en die vijf regels zijn de stijl.</strong> Niet "deze drie zien er mooi uit samen", maar: dit formaat, deze compositie, deze toon, dit verloop, en niets in het beeld gebakken. Wie dat vastlegt, hoeft bij motief nummer acht geen smaakbeslissing meer te nemen.</p>
+        <p>De repo doet dit al een keer: <code>scripts/logo-maken.py</code> bouwt de logovarianten, ze staan in <code>docs/logo/</code>, en de README ernaast legt uit waarom de letters zijn zoals ze zijn. Dit voorstel is diezelfde vorm, voor beeld.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <div class="lbl">Het slot</div>
+        <h2>Dit is geen gewone hero</h2>
+      </div>
+      <div class="prose">
+        <p>De kaart komt uit <code>sections/categories.liquid</code> en wordt opgemaakt door <code>assets/base.css</code>, regel 231 tot 238. Drie eigenschappen daarvan bepalen alles wat hieronder volgt, en ze zijn geen van drieen vanzelfsprekend.</p>
+      </div>
+      <div class="anatomy">
+        <div class="sh">
+          <div data-staat="na">
+            <a class="mcard m1" href="#">
+              <div class="mcard__photo">
+                <div class="ph">
+                  <div class="ph__sky" style="background:linear-gradient(178deg,#9fb3c8 0%,#c8cfd2 34%,#8f8378 60%,#5f5348 100%)"></div>
+                  <div class="ph__garment" style="top:30%;height:70%;background:linear-gradient(168deg,#243a63,#16243f)"></div>
+                  <div class="ph__motief" style="top:24%;width:40%">
+                    <svg viewBox="0 0 100 70" role="img" aria-label="Stadsplattegrond als borduurmotief">
+                      <g fill="none" stroke="#dfe6ef" stroke-width="1.5" stroke-linecap="round" opacity=".92">
+                        <path d="M34.96,56.53 A16,16 0 0 1 65.04,56.53"/>
+                        <path d="M27.45,53.79 A24,24 0 0 1 72.55,53.79"/>
+                        <path d="M19.93,51.06 A32,32 0 0 1 80.07,51.06"/>
+                        <path d="M12.41,48.32 A40,40 0 0 1 87.59,48.32"/>
+                        <path d="M59.19,54.28 L83.70,33.71"/>
+                        <path d="M54.10,50.72 L65.05,20.65"/>
+                        <path d="M45.90,50.72 L34.95,20.65"/>
+                        <path d="M40.81,54.28 L16.30,33.71"/>
+                        <path d="M6,14 L94,14"/>
+                        <path d="M6,9 L94,9"/>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="mcard__scrim"></div>
+              <div class="mcard__body">
+                <div class="mcard__tag">Motief</div>
+                <h3 class="mcard__title">Amsterdam City Map</h3>
+                <p class="mcard__desc">De plattegrond van de binnenstad, geborduurd in een kleur.</p>
+                <span class="mcard__cta">Bekijk &rarr;</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="specs">
+          <div class="spec">
+            <div class="lbl">4:5 staand</div>
+            <p><code>aspect-ratio:4/5</code> met <code>object-fit:cover</code>. Het hele beeld is zichtbaar, er wordt niets weggesneden. Wat je aanlevert, is wat er staat &mdash; ook de randen.</p>
+          </div>
+          <div class="spec">
+            <div class="lbl">45% navy</div>
+            <p><code>opacity:.55</code> op een navy ondergrond. Elke foto komt voor bijna de helft onder <code>#0F1E3D</code> te liggen. Kleuren dempen, contrast zakt, en drukke beelden worden modder.</p>
+          </div>
+          <div class="spec">
+            <div class="lbl">Tekst eroverheen</div>
+            <p>Label, titel, omschrijving en knoptekst staan er als HTML overheen, onderaan, met 2rem marge. Dus: geen tekst in het beeld, en de onderste 38% blijft leeg.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <div class="lbl">Het verschil</div>
+        <h2>Zonder bewerking is het geen set</h2>
+      </div>
+      <div class="prose">
+        <p>Hieronder staan de drie kaarten twee keer: zoals de bronbeelden binnenkomen, en zoals ze eruit komen. <strong>Klik de schakelaar om te wisselen.</strong> De beelden zijn stand-ins, geen echte foto's &mdash; ze laten zien wat de bewerking doet, niet hoe de sfeerbeelden eruitzien.</p>
+      </div>
+      <div class="board">
+        <div class="board__bar">
+          <div class="state" id="staat-tekst">Nu: <b>ruwe bronbeelden</b> &mdash; verschillende belichting, motief te laag, geen verloop</div>
+          <div class="sh-toggle" role="group" aria-label="Toon ruwe of bewerkte beelden">
+            <button type="button" data-zet="ruw" aria-pressed="true">Ruwe bron</button>
+            <button type="button" data-zet="na" aria-pressed="false">Na de generator</button>
+          </div>
+        </div>
+        <div class="sh">
+          <div class="sh-grid" id="bord" data-staat="ruw">
+
+            <a class="mcard m1" href="#">
+              <div class="mcard__photo">
+                <div class="ph">
+                  <div class="ph__sky" style="background:linear-gradient(178deg,#9fb3c8 0%,#c8cfd2 34%,#8f8378 60%,#5f5348 100%)"></div>
+                  <div class="ph__garment" style="top:30%;height:70%;background:linear-gradient(168deg,#243a63,#16243f)"></div>
+                  <div class="ph__motief">
+                    <svg viewBox="0 0 100 70" role="img" aria-label="Stadsplattegrond als borduurmotief">
+                      <g fill="none" stroke="#dfe6ef" stroke-width="1.5" stroke-linecap="round" opacity=".92">
+                        <path d="M34.96,56.53 A16,16 0 0 1 65.04,56.53"/>
+                        <path d="M27.45,53.79 A24,24 0 0 1 72.55,53.79"/>
+                        <path d="M19.93,51.06 A32,32 0 0 1 80.07,51.06"/>
+                        <path d="M12.41,48.32 A40,40 0 0 1 87.59,48.32"/>
+                        <path d="M59.19,54.28 L83.70,33.71"/>
+                        <path d="M54.10,50.72 L65.05,20.65"/>
+                        <path d="M45.90,50.72 L34.95,20.65"/>
+                        <path d="M40.81,54.28 L16.30,33.71"/>
+                        <path d="M6,14 L94,14"/>
+                        <path d="M6,9 L94,9"/>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="mcard__scrim"></div>
+              <div class="mcard__body">
+                <div class="mcard__tag">Motief</div>
+                <h3 class="mcard__title">Amsterdam City Map</h3>
+                <p class="mcard__desc">De plattegrond van de binnenstad, geborduurd in een kleur.</p>
+                <span class="mcard__cta">Bekijk &rarr;</span>
+              </div>
+            </a>
+
+            <a class="mcard m2" href="#">
+              <div class="mcard__photo">
+                <div class="ph">
+                  <div class="ph__sky" style="background:linear-gradient(172deg,#dfe7dd 0%,#eef0e8 40%,#cfd6c6 72%,#a8b39c 100%)"></div>
+                  <div class="ph__garment" style="top:26%;height:74%;background:linear-gradient(168deg,#b9d3c2,#8fb5a0)"></div>
+                  <div class="ph__motief">
+                    <svg viewBox="0 0 100 70" role="img" aria-label="Drie andreaskruizen als borduurmotief">
+                      <g stroke="#1b3352" stroke-width="7" stroke-linecap="round" opacity=".9">
+                        <path d="M38,10 L62,26 M62,10 L38,26"/>
+                        <path d="M38,29 L62,45 M62,29 L38,45"/>
+                        <path d="M38,48 L62,64 M62,48 L38,64"/>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="mcard__scrim"></div>
+              <div class="mcard__body">
+                <div class="mcard__tag">Motief</div>
+                <h3 class="mcard__title">Andreaskruizen</h3>
+                <p class="mcard__desc">De drie kruizen uit het stadswapen.</p>
+                <span class="mcard__cta">Bekijk &rarr;</span>
+              </div>
+            </a>
+
+            <a class="mcard mcard--leeg" href="#">
+              <div class="mcard__photo">
+                <div class="ph"><div class="ph__sky"></div></div>
+              </div>
+              <div class="mcard__scrim"></div>
+              <div class="leeg-note"><span>Geen bronbeeld<br>Canal Belt</span></div>
+              <div class="mcard__body">
+                <div class="mcard__tag">Motief</div>
+                <h3 class="mcard__title">Amsterdam Canal Belt</h3>
+                <p class="mcard__desc">De grachtengordel, van Singel tot Prinsengracht.</p>
+                <span class="mcard__cta">Bekijk &rarr;</span>
+              </div>
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <div class="lbl">De bewerking</div>
+        <h2>Vijf regels, en die vijf zijn de stijl</h2>
+      </div>
+      <div class="rules">
+        <div class="rule">
+          <div class="lbl">Formaat</div>
+          <h3>1600 &times; 2000</h3>
+          <p>Twee keer de 800 die Shopify opvraagt, dus scherp op een retinascherm. <code>image_url: width: 800</code> schaalt zelf terug.</p>
+        </div>
+        <div class="rule">
+          <div class="lbl">Compositie</div>
+          <h3>Motief in de bovenste 62%</h3>
+          <p>De onderste 38% blijft leeg, want daar landt de tekst. Een motief dat laag in het bronbeeld staat, wordt omhoog geschoven.</p>
+        </div>
+        <div class="rule">
+          <div class="lbl">Toon</div>
+          <h3>Naar een gedeeld doel</h3>
+          <p>Zelfde belichting, iets ingehouden verzadiging, lichte warme zweem. Drie verschillende foto's gaan als een reeks lezen.</p>
+        </div>
+        <div class="rule">
+          <div class="lbl">Leesbaarheid</div>
+          <h3>Verloop in de onderste derde</h3>
+          <p>Navy, ingebakken. Witte tekst haalt daarmee altijd contrast, hoe licht het bronbeeld ook is. Zie hieronder.</p>
+        </div>
+        <div class="rule">
+          <div class="lbl">Terughoudendheid</div>
+          <h3>Niets in het beeld</h3>
+          <p>Geen tekst, geen logo, geen kader. De kaart tekent titel, label en knop zelf; dubbel zou botsen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <div class="lbl">Waarom regel vier er is</div>
+        <h2>Een lichte foto breekt de tekst</h2>
+      </div>
+      <div class="prose">
+        <p>Dit is geen smaakkwestie maar een rekensom. Een witte hoodie in het tekstvlak (<code>#F2F0EC</code>) wordt door <code>opacity:.55</code> op navy samengesteld tot <code>#8C929D</code>. Witte tekst daarop haalt <strong>3,1:1</strong>. De WCAG vraagt 4,5:1 voor lopende tekst, dus dat zakt eronder. Met de bewerking erop is de <em>laagste</em> waarde die in het hele tekstvlak nog voorkomt <strong>9,7:1</strong> &mdash; niet geschat maar gemeten, door <code>scripts/check-motiefbeeld.py</code> over elke rij van het vlak.</p>
+      </div>
+      <div class="contrast">
+        <div class="cc">
+          <div class="cc__head"><div class="lbl">Zonder verloop</div><span class="pill pill--no">3,1:1</span></div>
+          <div class="cc__stage sh">
+            <div data-staat="ruw">
+              <a class="mcard" href="#">
+                <div class="mcard__photo">
+                  <div class="ph">
+                    <div class="ph__sky" style="background:linear-gradient(178deg,#e8e6e1,#f2f0ec 55%,#eceae4)"></div>
+                    <div class="ph__garment" style="top:24%;height:76%;background:linear-gradient(168deg,#fbfaf7,#eeebe4)"></div>
+                    <div class="ph__motief" style="top:24%;width:40%">
+                      <svg viewBox="0 0 100 70" role="img" aria-label="Stadsplattegrond als borduurmotief">
+                        <g fill="none" stroke="#41506b" stroke-width="1.5" stroke-linecap="round">
+                          <path d="M34.96,56.53 A16,16 0 0 1 65.04,56.53"/>
+                          <path d="M27.45,53.79 A24,24 0 0 1 72.55,53.79"/>
+                          <path d="M19.93,51.06 A32,32 0 0 1 80.07,51.06"/>
+                          <path d="M12.41,48.32 A40,40 0 0 1 87.59,48.32"/>
+                          <path d="M59.19,54.28 L83.70,33.71"/>
+                          <path d="M54.10,50.72 L65.05,20.65"/>
+                          <path d="M45.90,50.72 L34.95,20.65"/>
+                          <path d="M40.81,54.28 L16.30,33.71"/>
+                        </g>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="mcard__scrim"></div>
+                <div class="mcard__body">
+                  <div class="mcard__tag">Motief</div>
+                  <h3 class="mcard__title">Amsterdam City Map</h3>
+                  <p class="mcard__desc">De plattegrond van de binnenstad, geborduurd in een kleur.</p>
+                  <span class="mcard__cta">Bekijk &rarr;</span>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="cc__text">
+            <p>De omschrijving en het label staan op 85% dekking en verdwijnen als eerste. De titel houdt het net, de rest niet.</p>
+          </div>
+        </div>
+        <div class="cc">
+          <div class="cc__head"><div class="lbl">Met verloop</div><span class="pill pill--yes">9,7:1</span></div>
+          <div class="cc__stage sh">
+            <div data-staat="na">
+              <a class="mcard" href="#">
+                <div class="mcard__photo">
+                  <div class="ph">
+                    <div class="ph__sky" style="background:linear-gradient(178deg,#e8e6e1,#f2f0ec 55%,#eceae4)"></div>
+                    <div class="ph__garment" style="top:24%;height:76%;background:linear-gradient(168deg,#fbfaf7,#eeebe4)"></div>
+                    <div class="ph__motief" style="top:24%;width:40%">
+                      <svg viewBox="0 0 100 70" role="img" aria-label="Stadsplattegrond als borduurmotief">
+                        <g fill="none" stroke="#41506b" stroke-width="1.5" stroke-linecap="round">
+                          <path d="M34.96,56.53 A16,16 0 0 1 65.04,56.53"/>
+                          <path d="M27.45,53.79 A24,24 0 0 1 72.55,53.79"/>
+                          <path d="M19.93,51.06 A32,32 0 0 1 80.07,51.06"/>
+                          <path d="M12.41,48.32 A40,40 0 0 1 87.59,48.32"/>
+                          <path d="M59.19,54.28 L83.70,33.71"/>
+                          <path d="M54.10,50.72 L65.05,20.65"/>
+                          <path d="M45.90,50.72 L34.95,20.65"/>
+                          <path d="M40.81,54.28 L16.30,33.71"/>
+                        </g>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="mcard__scrim"></div>
+                <div class="mcard__body">
+                  <div class="mcard__tag">Motief</div>
+                  <h3 class="mcard__title">Amsterdam City Map</h3>
+                  <p class="mcard__desc">De plattegrond van de binnenstad, geborduurd in een kleur.</p>
+                  <span class="mcard__cta">Bekijk &rarr;</span>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="cc__text">
+            <p>Het motief blijft even zichtbaar; alleen de onderste derde wordt donkerder. Het verloop begint op 42% hoogte en is pas onderaan vol.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <div class="lbl">Voor volgende keer</div>
+        <h2>Een vierde motief erbij</h2>
+      </div>
+      <div class="prose">
+        <p>Dit is de reden dat het een script wordt en geen handwerk. De volgorde is vast, en stap 3 is het enige dat rekenwerk kost.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step__n">1</div>
+          <div class="lbl">Bronbeeld neerzetten</div>
+          <p>Het aangeleverde beeld in <code>docs/motieven/bron/&lt;sleutel&gt;.jpg</code>, ongewijzigd. De bron blijft bewaard, zodat een latere stijlwijziging op alle motieven opnieuw gedraaid kan worden.</p>
+        </div>
+        <div class="step">
+          <div class="step__n">2</div>
+          <div class="lbl">Een regel toevoegen</div>
+          <p>In de tabel bovenin het script: de sleutel, de naam, en waar het motief in het bronbeeld zit als het niet vanzelf goed valt.</p>
+        </div>
+        <div class="step">
+          <div class="step__n">3</div>
+          <div class="lbl">Draaien</div>
+          <p>Het script verwerkt alle motieven opnieuw, dus de set blijft onderling gelijk &mdash; ook de oude.</p>
+        </div>
+        <div class="step">
+          <div class="step__n">4</div>
+          <div class="lbl">Uploaden</div>
+          <p>De uitkomst in Shopify bij de kaart zetten, via <em>Content &rarr; Files</em> of rechtstreeks in het themabeheer.</p>
+        </div>
+      </div>
+      <pre>docs/motieven/
+  bron/                     de aangeleverde beelden, ongewijzigd
+    amsterdam-city-map.jpg
+    andreaskruizen.jpg
+  amsterdam-city-map.jpg    1600 x 2000, klaar voor de kaart
+  andreaskruizen.jpg
+  README.md                 wat de stijl is en waarom
+
+python3 scripts/motiefbeeld-maken.py</pre>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <div class="lbl">Wat nog open staat</div>
+        <h2>Canal Belt heeft geen beeld</h2>
+      </div>
+      <div class="open">
+        <p>De zeven sfeerbeelden uit het Amsterdam-thema horen allemaal bij de <strong>Stadsplattegrond</strong>, en er staan er drie klaar voor <strong>Andreaskruizen</strong>. Voor <strong>Canal Belt</strong> is er niets: dat motief bestond in fase een nog niet.</p>
+        <p>Zolang dat zo is, toont de kaart de plaatshouder hierboven &mdash; leesbaar, niet lelijk, en zichtbaar onaf. Dat is beter dan een lege kaart, en beter dan een beeld van een ander motief lenen: een klant die op Canal Belt klikt en de plattegrond ziet, wordt op het verkeerde been gezet.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="lbl">Bordurodam &middot; voorstel</div>
+    <p>De beelden op deze pagina zijn stand-ins: gelaagde kleurvlakken met het motief als vectortekening, niet de echte sfeerbeelden. Ze staan er om compositie, toon en contrast te kunnen beoordelen. De 3,1:1 is gerekend over de samenstelling van <code>#F2F0EC</code> op <code>#0F1E3D</code> bij <code>opacity:.55</code>, zoals <code>assets/base.css</code> die maakt. De 9,7:1 is de laagste waarde die <code>scripts/check-motiefbeeld.py</code> meet over het hele tekstvlak, met een wit kledingstuk als bron.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var bord = document.getElementById('bord');
+  var tekst = document.getElementById('staat-tekst');
+  var knoppen = document.querySelectorAll('.sh-toggle button[data-zet]');
+  var teksten = {
+    ruw: 'Nu: <b>ruwe bronbeelden</b> &mdash; verschillende belichting, motief te laag, geen verloop',
+    na:  'Nu: <b>na de generator</b> &mdash; zelfde toon, motief in de bovenste 62%, verloop onderin'
+  };
+  knoppen.forEach(function(knop){
+    knop.addEventListener('click', function(){
+      var zet = knop.getAttribute('data-zet');
+      bord.setAttribute('data-staat', zet);
+      tekst.innerHTML = teksten[zet];
+      knoppen.forEach(function(k){
+        k.setAttribute('aria-pressed', String(k === knop));
+      });
+    });
+  });
+})();
+</script>

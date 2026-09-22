@@ -1,0 +1,113 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "hero-b2b",
+      "settings": {
+        "eyebrow": "Onze ontwerpen · kant-en-klaar geborduurd",
+        "headline": "<p>Draag Amsterdam met trots, vakkundig geborduurd.</p>",
+        "subheadline": "Onze eigen motieven, in ons atelier gedigitaliseerd en op jouw kledingstuk geborduurd in de garenkleur die je kiest. Geen logo nodig, geen offerte, gewoon bestellen.",
+        "primary_cta_text": "Bekijk de ontwerpen",
+        "primary_cta_link": "",
+        "secondary_cta_text": "",
+        "secondary_cta_link": "",
+        "image_alt": "Close-up van een geborduurd Amsterdams motief",
+        "show_badge_left": true,
+        "badge_left_number": "3",
+        "badge_left_label": "eigen ontwerpen",
+        "badge_left_text": "Kant-en-klare borduring, direct te bestellen zonder wachten op een offerte.",
+        "show_badge_right": true,
+        "badge_right_label": "Vakmanschap sinds",
+        "badge_right_number": "1995",
+        "trust_label": "",
+        "bg_color": "#faf7f2",
+        "text_color": "#1a2a44",
+        "muted_color": "#52606d",
+        "accent_color": "#c9a961",
+        "card_bg_color": "#ffffff",
+        "border_color": "#e5e7eb",
+        "button_bg": "#1a2a44",
+        "button_fg": "#ffffff"
+      }
+    },
+    "motieven": {
+      "type": "categories",
+      "blocks": {
+        "motief-stadsplattegrond": {
+          "type": "cat",
+          "settings": {
+            "image": "shopify://shop_images/Screenshot_2026-09-08_at_16.52.29.png",
+            "tag": "Motief",
+            "title": "Stadsplattegrond",
+            "desc": "De plattegrond van de binnenstad, geborduurd in één kleur.",
+            "cta": "Bekijk",
+            "link": ""
+          }
+        },
+        "motief-grachtengordel": {
+          "type": "cat",
+          "settings": {
+            "tag": "Motief",
+            "title": "Grachtengordel",
+            "desc": "Van Singel tot Prinsengracht.",
+            "cta": "Bekijk",
+            "link": ""
+          }
+        },
+        "motief-andreaskruizen": {
+          "type": "cat",
+          "settings": {
+            "tag": "Motief",
+            "title": "Andreaskruizen",
+            "desc": "De drie kruizen uit het stadswapen.",
+            "cta": "Bekijk",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "motief-stadsplattegrond",
+        "motief-grachtengordel",
+        "motief-andreaskruizen"
+      ],
+      "settings": {
+        "eyebrow": "Ons werk",
+        "title": "Vaste motieven, op allerlei items beschikbaar",
+        "text": "Kies je motief, kies je kledingstuk en kies de kleur garen. Wij borduren het."
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "category_menu": "",
+        "show_heading": false,
+        "products_per_page": 36
+      }
+    },
+    "cta": {
+      "type": "cta-band",
+      "settings": {
+        "title": "Iets anders in gedachten?",
+        "text": "Wij borduren ook jouw eigen logo of ontwerp, op elk kledingstuk uit het assortiment.",
+        "btn1_text": "Neem contact op",
+        "btn1_link": "/pages/contact",
+        "btn2_text": "",
+        "btn2_link": ""
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "motieven",
+    "main",
+    "cta"
+  ]
+}
