@@ -1,0 +1,80 @@
+{%- comment -%}
+  Raster van kaarten met een foto, een label, een titel, een omschrijving en een
+  link. Stond op de homepage van fase een, zonder blokken erin, en is daarom een
+  tijd geparkeerd geweest -- zie docs/geparkeerd/README.md.
+
+  Op 8 september 2026 teruggezet voor de landingspagina van Onze ontwerpen: een
+  rij motieven boven het productraster, elk met een link naar zijn eigen product.
+  Dezelfde gedachte stond in het thema bordurodam-amsterdam al klaar als
+  "Een motief, meerdere manieren om hem te dragen", maar die stond uitgeschakeld.
+
+  Een blok zonder link is geen <a> en toont zijn CTA niet. Anders wordt href=""
+  -- dat verwijst naar de pagina zelf -- en staat er een knop "Bekijk" die de
+  pagina herlaadt. Bewaakt door scripts/test-motievenrij.js.
+
+  De sectie zelf weet niet wat een motief is en ook niet wat een categorie is; hij
+  toont blokken met een plaatje en een link. Dat is met opzet: zo is hij ook nog de
+  categoriesectie waarvoor hij gemaakt is.
+{%- endcomment -%}
+<section class="cats">
+  <div class="container">
+    <div style="text-align:center;max-width:640px;margin:0 auto 1rem">
+      <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+      <h2>{{ section.settings.title }}</h2>
+      <p style="color:var(--bd-muted)">{{ section.settings.text }}</p>
+    </div>
+    <div class="cats__grid">
+      {%- for block in section.blocks -%}
+        {%- capture kaart -%}
+          {%- if block.settings.image != blank -%}
+            <img src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="800" height="1000">
+          {%- endif -%}
+          <div class="cat__body">
+            <div class="cat__tag">{{ block.settings.tag }}</div>
+            <h3 class="cat__title">{{ block.settings.title }}</h3>
+            <p class="cat__desc">{{ block.settings.desc }}</p>
+            {%- if block.settings.link != blank -%}
+              <span class="cat__cta">{{ block.settings.cta | default: 'Bekijk collectie' }} →</span>
+            {%- endif -%}
+          </div>
+        {%- endcapture -%}
+        {%- if block.settings.link != blank -%}
+          <a class="cat" href="{{ block.settings.link }}" {{ block.shopify_attributes }}>{{ kaart }}</a>
+        {%- else -%}
+          <div class="cat" {{ block.shopify_attributes }}>{{ kaart }}</div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Kaartenraster",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Onze werelden" },
+    { "type": "text", "id": "title", "label": "Titel", "default": "Voor bedrijf én particulier" },
+    { "type": "textarea", "id": "text", "label": "Intro", "default": "Van bedrijfskleding en promotieartikelen tot persoonlijke cadeaus en Amsterdam-souvenirs." }
+  ],
+  "blocks": [
+    { "type": "cat", "name": "Kaart", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Afbeelding" },
+      { "type": "text", "id": "tag", "label": "Label boven de titel", "default": "Motief" },
+      { "type": "text", "id": "title", "label": "Titel", "default": "Bedrijfskleding" },
+      { "type": "textarea", "id": "desc", "label": "Omschrijving", "default": "Polo's, jassen en werkkleding met je logo geborduurd." },
+      { "type": "text", "id": "cta", "label": "CTA-tekst", "default": "Bekijk collectie" },
+      { "type": "url", "id": "link", "label": "Link" }
+    ]}
+  ],
+  "presets": [{
+    "name": "Categorieën-grid",
+    "blocks": [
+      { "type": "cat", "settings": { "tag": "B2B", "title": "Bedrijfskleding", "desc": "Polo's, sweaters en jassen met je logo geborduurd." }},
+      { "type": "cat", "settings": { "tag": "B2C", "title": "Gepersonaliseerd", "desc": "Namen, dates en teksten voor persoonlijke cadeaus." }},
+      { "type": "cat", "settings": { "tag": "Cadeau", "title": "Kraamcadeaus", "desc": "Rompertjes en dekentjes met naam, direct hartverwarmend." }},
+      { "type": "cat", "settings": { "tag": "Souvenir", "title": "Amsterdam-lijn", "desc": "Onze eigen souvenircollectie: geborduurd, authentiek, Amsterdams." }},
+      { "type": "cat", "settings": { "tag": "Promo", "title": "Promotieartikelen", "desc": "Tassen, mutsen en handdoeken, veel gevraagd voor beurzen en events." }}
+    ]
+  }]
+}
+{% endschema %}
